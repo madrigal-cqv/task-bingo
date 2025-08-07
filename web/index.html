@@ -12,15 +12,18 @@
 </head>
 
 <body>
-  <label for="numTasks">Choose a bingo card size: </label>
-  <select name="numTasks" id="numTasks">
-    <option value=9>9</option>
-    <option value=16>16</option>
-    <option value=25>25</option>
-  </select>
+  <div id="bingo-card"></div>
   
-  <table id="bingo-card"></table>
+  <div id="numTasks-wrapper">
+    <label for="numTasks">Choose a bingo card size: </label>
+    <select name="numTasks" id="numTasks">
+      <option value=9>9</option>
+      <option value=16>16</option>
+      <option value=25>25</option>
+    </select>
+  </div>
 
+  <div id="tasks-input"></div>
   <div id="output"></div>
 
 </body>
