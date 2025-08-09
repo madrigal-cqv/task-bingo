@@ -14,13 +14,22 @@
 <body>
   <div id="bingo-card"></div>
   
-  <div id="numTasks-wrapper">
+  <div id="dropdown-wrapper">
     <label for="numTasks">Choose a bingo card size: </label>
     <select name="numTasks" id="numTasks">
       <option value=9>9</option>
       <option value=16>16</option>
       <option value=25>25</option>
     </select>
+
+    <label for="duration">Choose a duration: </label>
+    <select name="duration" id="duration">
+      <option value='d'>1 day</option>
+      <option value='w'>1 week</option>
+      <option value='m'>1 month</option>
+    </select>
+
+    <button id="start">Start</button>
   </div>
 
   <div id="tasks-input"></div>
