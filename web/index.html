@@ -12,28 +12,32 @@
 </head>
 
 <body>
-  <div id="bingo-card"></div>
-  
-  <div id="dropdown-wrapper">
-    <label for="numTasks">Choose a bingo card size: </label>
-    <select name="numTasks" id="numTasks">
-      <option value=9>9</option>
-      <option value=16>16</option>
-      <option value=25>25</option>
-    </select>
-
-    <label for="duration">Choose a duration: </label>
-    <select name="duration" id="duration">
-      <option value='d'>1 day</option>
-      <option value='w'>1 week</option>
-      <option value='m'>1 month</option>
-    </select>
-
-    <button id="start">Start</button>
+  <div id="input-page" style="display: none;">
+    <div id="tasks-input"></div>
+    
+    <div id="dropdown-wrapper">
+      <label for="numTasks">Bingo card size: </label>
+      <select name="numTasks" id="numTasks">
+        <option value=9>9</option>
+        <option value=16>16</option>
+        <option value=25>25</option>
+      </select>
+      <br><br>
+      <label for="duration">Duration: </label>
+      <select name="duration" id="duration">
+        <option value='d'>1 day</option>
+        <option value='w'>1 week</option>
+        <option value='m'>1 month</option>
+      </select>
+      <br><br>
+      <button id="start">Start</button>
+    </div>
   </div>
 
-  <div id="tasks-input"></div>
-  <div id="output"></div>
+  <div id="bingo-page">
+    <div id="bingo-card"></div>
+    <div id="bingo-notif">Bingo!</div>
+  </div>
 
 </body>
 </html>

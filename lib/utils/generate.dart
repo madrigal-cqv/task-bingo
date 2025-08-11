@@ -26,7 +26,7 @@ mixin Generate {
       for (int c = 0; c < size; c++) {
         curRow.insertAdjacentHTML(
           'beforeend',
-          "<div class='col' id='c$c'>col $c</div>",
+          "<div class='col'><button class='bingo-button' id='c$c'>Col $c</button></div>",
         );
       }
     }

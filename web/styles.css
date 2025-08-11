@@ -3,21 +3,70 @@
 html, body {
   width: 100%;
   margin: 0;
-  padding: 0;
+  padding: 1.5% 2%;
   font-family: 'Roboto', sans-serif;
   display: flex;
+  gap: 1em;
 }
 
-#output {
-  padding: 20px;
+#bingo-page {
+  margin: 0 auto;
+}
+
+#bingo-notif {
+  height: 15vh;
+  align-content: center;
   text-align: center;
+  font-size: 32px;
 }
 
 #bingo-card {
-  width: 50%;
+  height: 75vh;
+  width: 75vh;
   display: flex;
 }
 
-#task-input {
-  display: block;
+.col {
+  border: 1px solid black;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.row {
+  width: 100%;
+}
+
+.bingo-button {
+  width: 100%;
+  height: 100%;
+}
+
+#input-page {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#tasks-input {
+  width: 50%;
+}
+
+input {
+  border: 0;
+  outline: 0;
+  margin-bottom: 5px;
+  border-bottom: 1px solid black;
+  width: 80%;
+}
+
+#dropdown-wrapper {
+  width: 50%;
+}
+
+#start {
+  padding: 15px 72px;
+}
+
+p {
+  margin: 0;
 }
