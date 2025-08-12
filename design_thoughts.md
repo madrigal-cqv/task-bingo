@@ -15,4 +15,4 @@
 - Single user
 - Prompt user to make a bingo card if there are none active right now
 - 2 page: input page and bingo page
-- JSon for storing data
+- JSon for storing data, save and load the latest card only

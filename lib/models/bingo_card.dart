@@ -5,7 +5,8 @@ class BingoCard {
   DateTime endTime;
   final List<Task> tasksList;
 
-  // I tried to look into how to make a more robust constructor, but the language does not really allow for it
+  // I tried to look into how to make a more robust constructor,
+  // but the language does not really allow for it
   BingoCard(this.startTime, this.endTime, this.tasksList);
 
   static DateTime calculateEndTime(String duration) {
