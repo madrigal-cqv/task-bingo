@@ -1,45 +1,56 @@
 import 'package:quickstart/models/bingo_card.dart';
-import 'package:universal_io/io.dart';
 import 'dart:convert';
+import 'package:web/web.dart' as web;
+import 'package:quickstart/models/task.dart';
 
 class Storage {
-  final String filePath;
-
-  Storage(this.filePath);
-
   // clear the content of storage
   void clear() {
-    final file = File(filePath);
-    file.writeAsStringSync(" ");
+    web.window.localStorage["startTime"] = '';
+    web.window.localStorage["endTime"] = '';
+    web.window.localStorage["tasks"] = '';
   }
 
   // save latest file
-  Future<void> save(BingoCard bingo) async {
-    final file = File(filePath);
+  void save(BingoCard bingo) {
     clear();
+    web.window.localStorage["startTime"] = bingo.startTime.toString();
+    web.window.localStorage["endTime"] = bingo.endTime.toString();
     final tasksJson = bingo.tasksList.map((task) => task.toString()).toList();
-    final formattedTasksJson = JsonEncoder.withIndent(' ').convert(tasksJson);
-    final writeToFile = "{ ${bingo.toString()}, 'task': $formattedTasksJson }";
-    await file.writeAsString(writeToFile, mode: FileMode.append);
+    final tasksFormatted = JsonEncoder.withIndent(' ').convert(tasksJson);
+    web.window.localStorage["tasks"] = tasksFormatted;
   }
 
   // load the latest bingo card
-  Future<BingoCard?> load() async {
-    final file = File(filePath);
+  BingoCard? load() {
+    String? startTime = web.window.localStorage["startTime"];
+    String? endTime = web.window.localStorage["endTime"];
+    String? tasksListJson = web.window.localStorage["tasks"];
 
-    // create file if somehow does not exist
-    if (!await file.exists()) {
-      await file.create(recursive: true);
+    if (startTime == null ||
+        endTime == null ||
+        tasksListJson == null ||
+        startTime == '' ||
+        endTime == '' ||
+        tasksListJson == '') {
       return null;
     }
 
-    final content = await file.readAsString();
-    final data = jsonDecode(content);
-    print(data);
+    List<Task> taskListDecoded = [];
+
+    final List<dynamic> tasksList = jsonDecode(tasksListJson);
+    for (int i = 0; i < tasksList.length; i++) {
+      final taskJson = jsonDecode(tasksList[i]);
+      taskListDecoded.add(Task(name: taskJson["name"]));
+      if (taskJson["done"]) {
+        taskListDecoded.last.markAsDone();
+      }
+    }
+
     return BingoCard(
-      DateTime.parse(data['startTime']),
-      DateTime.parse(data['endTime']),
-      [],
+      DateTime.parse(startTime),
+      DateTime.parse(endTime),
+      taskListDecoded,
     );
   }
 }

@@ -10,6 +10,6 @@ class Task {
 
   @override
   String toString() {
-    return '{ "name": $_name, "done": $_done }';
+    return '{ "name": "$_name", "done": $_done }';
   }
 }

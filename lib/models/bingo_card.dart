@@ -21,9 +21,4 @@ class BingoCard {
     }
     return curr;
   }
-
-  Map<String, dynamic> toJson() => {
-    'startTime': startTime.toString(),
-    'endTime': endTime.toString(),
-  };
 }
