@@ -4,6 +4,14 @@ class Task {
 
   Task({required String name}) : _name = name;
 
+  String getName() {
+    return _name;
+  }
+
+  bool isDone() {
+    return _done;
+  }
+
   void markAsDone() {
     _done = true;
   }

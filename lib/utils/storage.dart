@@ -11,7 +11,7 @@ class Storage {
     web.window.localStorage["tasks"] = '';
   }
 
-  // save latest file
+  // save latest bingo card
   void save(BingoCard bingo) {
     clear();
     web.window.localStorage["startTime"] = bingo.startTime.toString();

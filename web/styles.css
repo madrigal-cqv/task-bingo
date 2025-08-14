@@ -27,18 +27,23 @@ html, body {
 }
 
 .col {
+  width: 100%;
+}
+
+.row {
   border: 1px solid black;
   width: 100%;
   aspect-ratio: 1 / 1;
 }
 
-.row {
-  width: 100%;
-}
-
 .bingo-button {
   width: 100%;
   height: 100%;
+  background-color: white;
+}
+
+.bingo-button:hover {
+  background-color: rgb(219, 254, 219);
 }
 
 #input-page {
@@ -49,6 +54,7 @@ html, body {
 
 #tasks-input {
   width: 50%;
+  padding-left: 1.5%;
 }
 
 input {

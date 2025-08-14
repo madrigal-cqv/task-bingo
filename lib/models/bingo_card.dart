@@ -9,14 +9,13 @@ class BingoCard {
   // but the language does not really allow for it
   BingoCard(this.startTime, this.endTime, this.tasksList);
 
-  static DateTime calculateEndTime(String duration) {
-    DateTime curr = DateTime.now();
+  static DateTime calculateEndTime(String duration, DateTime curr) {
     switch (duration) {
-      case "day":
+      case "d":
         return curr.add(const Duration(hours: 24));
-      case "week":
+      case "w":
         return curr.add(const Duration(days: 7));
-      case "month":
+      case "m":
         return curr.add(const Duration(days: 30));
     }
     return curr;
