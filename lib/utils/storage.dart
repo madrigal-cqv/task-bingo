@@ -19,6 +19,7 @@ class Storage {
     final tasksJson = bingo.tasksList.map((task) => task.toString()).toList();
     final tasksFormatted = JsonEncoder.withIndent(' ').convert(tasksJson);
     web.window.localStorage["tasks"] = tasksFormatted;
+    web.window.localStorage["order"] = bingo.tasksOrder.toString();
   }
 
   // load the latest bingo card
@@ -26,18 +27,20 @@ class Storage {
     String? startTime = web.window.localStorage["startTime"];
     String? endTime = web.window.localStorage["endTime"];
     String? tasksListJson = web.window.localStorage["tasks"];
+    String? tasksOrderJson = web.window.localStorage["order"];
 
     if (startTime == null ||
         endTime == null ||
         tasksListJson == null ||
+        tasksOrderJson == null ||
         startTime == '' ||
         endTime == '' ||
-        tasksListJson == '') {
+        tasksListJson == '' ||
+        tasksOrderJson == '') {
       return null;
     }
 
     List<Task> taskListDecoded = [];
-
     final List<dynamic> tasksList = jsonDecode(tasksListJson);
     for (int i = 0; i < tasksList.length; i++) {
       final taskJson = jsonDecode(tasksList[i]);
@@ -47,10 +50,15 @@ class Storage {
       }
     }
 
-    return BingoCard(
+    List<int> taskOrderDecoded = jsonDecode(tasksOrderJson).cast<int>();
+
+    final result = BingoCard(
       DateTime.parse(startTime),
       DateTime.parse(endTime),
       taskListDecoded,
     );
+    result.tasksOrder = taskOrderDecoded;
+
+    return result;
   }
 }

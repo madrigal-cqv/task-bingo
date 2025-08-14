@@ -7,16 +7,6 @@ void main() {
       web.document.querySelector("#input-page") as web.HTMLDivElement;
   final bingoPage =
       web.document.querySelector("#bingo-page") as web.HTMLDivElement;
-
-  final storage = Storage();
-  storage.clear();
-  var bingoCard = storage.load();
-  if (bingoCard == null) {
-    bingoPage.style.display = 'none';
-  } else {
-    inputPage.style.display = 'none';
-  }
-
   final bingo = web.document.querySelector("#bingo-card") as web.HTMLDivElement;
   final tasksInput =
       web.document.querySelector("#tasks-input") as web.HTMLDivElement;
@@ -29,6 +19,15 @@ void main() {
 
   Generate.generateBoard(int.parse(numTasks.value), bingo);
   Generate.generateInputs(int.parse(numTasks.value), tasksInput);
+
+  final storage = Storage();
+  var bingoCard = storage.load();
+  if (bingoCard == null) {
+    bingoPage.style.display = 'none';
+  } else {
+    inputPage.style.display = 'none';
+    Generate.populateBoard(bingoCard, storage);
+  }
 
   numTasks.onChange.listen((data) {
     Generate.generateBoard(int.parse(numTasks.value), bingo);

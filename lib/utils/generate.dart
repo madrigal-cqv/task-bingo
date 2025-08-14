@@ -28,10 +28,9 @@ mixin Generate {
       bingo.insertAdjacentHTML('beforeend', "<div class='col' id='c$c'></div>");
       curRow = web.document.querySelector('#c$c') as web.HTMLDivElement;
       for (int r = 0; r < size; r++) {
-        curRow.insertAdjacentHTML(
-          'beforeend',
-          "<div class='row'><button class='bingo-button' id='r$numButton'></button></div>",
-        );
+        curRow.insertAdjacentHTML('beforeend', """<div class='row'>
+              <button class='bingo-button' id='r$numButton'></button>
+              </div>""");
         numButton++;
       }
     }
@@ -56,17 +55,37 @@ mixin Generate {
   }
 
   // populate the board based on bingo data
-  static void populateBoard(BingoCard bingo, int numTasks) {
+  static void populateBoard(BingoCard bingo, Storage storage) {
     for (int i = 0; i < bingo.tasksList.length; i++) {
       final button =
           web.document.querySelector("#r$i") as web.HTMLButtonElement;
       button.innerText = bingo.tasksList[bingo.tasksOrder[i]].getName();
       if (bingo.tasksList[bingo.tasksOrder[i]].isDone()) {
-        button.style.backgroundColor = "green";
+        button.style
+          ..backgroundColor = "green"
+          ..color = "white";
       }
+      button.onClick.listen((data) {
+        markAsDone(button, storage, bingo, bingo.tasksOrder[i]);
+      });
     }
   }
 
+  // mark tile as done. Update bingo board and memory
+  static void markAsDone(
+    web.HTMLButtonElement button,
+    Storage storage,
+    BingoCard bingo,
+    int pos,
+  ) {
+    button.style
+      ..backgroundColor = "green"
+      ..color = "white";
+    bingo.tasksList[pos].markAsDone();
+    storage.save(bingo);
+  }
+
+  // generate bingo board once user presses start
   static void onStart(int numTasks, String duration, Storage storage) {
     List<Task> tasksList = [];
     int size;
@@ -103,6 +122,6 @@ mixin Generate {
     }
 
     storage.save(bingo);
-    populateBoard(bingo, numTasks);
+    populateBoard(bingo, storage);
   }
 }
