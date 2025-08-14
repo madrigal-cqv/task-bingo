@@ -9,6 +9,7 @@ void main() {
       web.document.querySelector("#bingo-page") as web.HTMLDivElement;
 
   final storage = Storage();
+  storage.clear();
   var bingoCard = storage.load();
   if (bingoCard == null) {
     bingoPage.style.display = 'none';

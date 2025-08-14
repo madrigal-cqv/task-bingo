@@ -4,7 +4,10 @@ import 'package:quickstart/utils/storage.dart';
 import 'package:web/web.dart' as web;
 
 mixin Generate {
-  static int trueNumTasks(int numTasks) {
+  // Generate the bingo board based on the number of tasks
+  static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
+    bingo.innerHTML = "";
+    web.HTMLDivElement curRow;
     int size;
     switch (numTasks) {
       case 9:
@@ -20,14 +23,6 @@ mixin Generate {
         size = 0;
         break;
     }
-    return size;
-  }
-
-  // Generate the bingo board based on the number of tasks
-  static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
-    bingo.innerHTML = "";
-    web.HTMLDivElement curRow;
-    int size = trueNumTasks(numTasks);
     int numButton = 0;
     for (int c = 0; c < size; c++) {
       bingo.insertAdjacentHTML('beforeend', "<div class='col' id='c$c'></div>");
@@ -35,7 +30,7 @@ mixin Generate {
       for (int r = 0; r < size; r++) {
         curRow.insertAdjacentHTML(
           'beforeend',
-          "<div class='row'><button class='bingo-button' id='r$numButton'>Row $r</button></div>",
+          "<div class='row'><button class='bingo-button' id='r$numButton'></button></div>",
         );
         numButton++;
       }
@@ -61,11 +56,12 @@ mixin Generate {
   }
 
   // populate the board based on bingo data
-  static void populateBoard(BingoCard bingo) {
+  static void populateBoard(BingoCard bingo, int numTasks) {
     for (int i = 0; i < bingo.tasksList.length; i++) {
-      final button = web.document.querySelector("r$i") as web.HTMLButtonElement;
-      button.innerText = bingo.tasksList[i].getName();
-      if (bingo.tasksList[i].isDone()) {
+      final button =
+          web.document.querySelector("#r$i") as web.HTMLButtonElement;
+      button.innerText = bingo.tasksList[bingo.tasksOrder[i]].getName();
+      if (bingo.tasksList[bingo.tasksOrder[i]].isDone()) {
         button.style.backgroundColor = "green";
       }
     }
@@ -73,7 +69,19 @@ mixin Generate {
 
   static void onStart(int numTasks, String duration, Storage storage) {
     List<Task> tasksList = [];
-    for (int i = 0; i < numTasks; i++) {
+    int size;
+    switch (numTasks) {
+      case 9:
+        size = 8;
+        break;
+      case 25:
+        size = 24;
+        break;
+      default:
+        size = numTasks;
+        break;
+    }
+    for (int i = 0; i < size; i++) {
       final task =
           (web.document.querySelector("#input$i") as web.HTMLInputElement)
               .value;
@@ -85,8 +93,16 @@ mixin Generate {
       BingoCard.calculateEndTime(duration, DateTime.now()),
       tasksList,
     );
+    // all of these should have been handled in constructor if possible
+    bingo.generateTaskOrder();
+    if (bingo.tasksList.length == 8 || bingo.tasksList.length == 24) {
+      bingo.tasksOrder.add(bingo.tasksOrder[bingo.tasksList.length ~/ 2]);
+      bingo.tasksOrder[bingo.tasksList.length ~/ 2] = bingo.tasksList.length;
+      bingo.tasksList.add(Task(name: "Free space"));
+      bingo.tasksList[bingo.tasksList.length - 1].markAsDone();
+    }
 
     storage.save(bingo);
-    populateBoard(bingo);
+    populateBoard(bingo, numTasks);
   }
 }
