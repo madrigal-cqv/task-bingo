@@ -3,7 +3,7 @@ import 'package:quickstart/models/task.dart';
 import 'package:quickstart/utils/storage.dart';
 import 'package:web/web.dart' as web;
 
-mixin Generate {
+mixin Utils {
   // Generate the bingo board based on the number of tasks
   static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
     bingo.innerHTML = "";
@@ -64,6 +64,10 @@ mixin Generate {
         button.style
           ..backgroundColor = "green"
           ..color = "white";
+      } else {
+        button.style
+          ..backgroundColor = "white"
+          ..color = "black";
       }
       button.onClick.listen((data) {
         markAsDone(button, storage, bingo, bingo.tasksOrder[i]);
@@ -123,5 +127,9 @@ mixin Generate {
 
     storage.save(bingo);
     populateBoard(bingo, storage);
+  }
+
+  static void onClear(Storage storage) {
+    storage.clear();
   }
 }

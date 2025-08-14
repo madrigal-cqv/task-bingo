@@ -9,6 +9,7 @@ class Storage {
     web.window.localStorage["startTime"] = '';
     web.window.localStorage["endTime"] = '';
     web.window.localStorage["tasks"] = '';
+    web.window.localStorage["order"] = '';
   }
 
   // save latest bingo card

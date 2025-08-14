@@ -14,7 +14,6 @@ html, body {
 }
 
 #bingo-notif {
-  height: 15vh;
   align-content: center;
   text-align: center;
   font-size: 32px;
@@ -44,6 +43,20 @@ html, body {
 
 .bingo-button:hover {
   background-color: rgb(219, 254, 219);
+}
+
+#end-button {
+  height: 10vh;
+  width: 75vh;
+  align-content: center;
+}
+
+#end-button > button {
+  width: 100%;
+  height: 60%;
+  background-color: red;
+  font-size: larger;
+  color: white;
 }
 
 #input-page {
