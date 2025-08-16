@@ -4,10 +4,7 @@ import 'package:quickstart/utils/storage.dart';
 import 'package:web/web.dart' as web;
 
 mixin Utils {
-  // Generate the bingo board based on the number of tasks
-  static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
-    bingo.innerHTML = "";
-    web.HTMLDivElement curRow;
+  static int getSize(int numTasks) {
     int size;
     switch (numTasks) {
       case 9:
@@ -23,6 +20,14 @@ mixin Utils {
         size = 0;
         break;
     }
+    return size;
+  }
+
+  // Generate the bingo board based on the number of tasks
+  static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
+    bingo.innerHTML = "";
+    web.HTMLDivElement curRow;
+    int size = getSize(numTasks);
     int numButton = 0;
     for (int c = 0; c < size; c++) {
       bingo.insertAdjacentHTML('beforeend', "<div class='col' id='c$c'></div>");
@@ -75,7 +80,7 @@ mixin Utils {
     }
   }
 
-  // mark tile as done. Update bingo board and memory
+  // mark tile as done. Update bingo board and memory. Check for bingos if any
   static void markAsDone(
     web.HTMLButtonElement button,
     Storage storage,
@@ -86,7 +91,71 @@ mixin Utils {
       ..backgroundColor = "green"
       ..color = "white";
     bingo.tasksList[pos].markAsDone();
+    bingoNotify(bingo);
     storage.save(bingo);
+  }
+
+  static void bingoNotify(BingoCard bingo) {
+    final bingoNoti =
+        web.document.querySelector("#bingo-notif") as web.HTMLDivElement;
+    int bingos = bingoCheck(bingo);
+    if (bingos > 0) {
+      if (bingos == getSize(bingo.tasksList.length) * 2 + 2) {
+        bingoNoti.innerText = "FULL BINGO!";
+      } else {
+        bingoNoti.innerText = "$bingos BINGO!";
+      }
+    } else {
+      bingoNoti.innerText = "";
+    }
+  }
+
+  static int bingoCheck(BingoCard bingo) {
+    int size = getSize(bingo.tasksList.length);
+    int res = 0;
+    bool checkDiagLeft = true;
+    bool checkDiagRight = true;
+
+    for (int c = 0; c < size; c++) {
+      bool checkCol = true;
+      bool checkRow = true;
+      for (int r = 0; r < size; r++) {
+        // column check
+        checkCol =
+            checkCol &&
+            bingo.tasksList[bingo.tasksOrder[size * c + r]].isDone();
+        // row check
+        checkRow =
+            checkRow &&
+            bingo.tasksList[bingo.tasksOrder[size * r + c]].isDone();
+        // top left to bottom right check
+        if (r == c) {
+          checkDiagLeft =
+              checkDiagLeft &&
+              bingo.tasksList[bingo.tasksOrder[size * c + r]].isDone();
+        }
+        // top right to bottom left check
+        if (r + c == size - 1) {
+          checkDiagRight =
+              checkDiagRight &&
+              bingo.tasksList[bingo.tasksOrder[size * c + r]].isDone();
+        }
+      }
+      if (checkCol) {
+        res++;
+      }
+      if (checkRow) {
+        res++;
+      }
+    }
+    if (checkDiagLeft) {
+      res++;
+    }
+    if (checkDiagRight) {
+      res++;
+    }
+
+    return res;
   }
 
   // generate bingo board once user presses start
@@ -116,8 +185,10 @@ mixin Utils {
       BingoCard.calculateEndTime(duration, DateTime.now()),
       tasksList,
     );
+
     // all of these should have been handled in constructor if possible
     bingo.generateTaskOrder();
+    // add middle free space for board of size 9 and 25
     if (bingo.tasksList.length == 8 || bingo.tasksList.length == 24) {
       bingo.tasksOrder.add(bingo.tasksOrder[bingo.tasksList.length ~/ 2]);
       bingo.tasksOrder[bingo.tasksList.length ~/ 2] = bingo.tasksList.length;
@@ -131,5 +202,8 @@ mixin Utils {
 
   static void onClear(Storage storage) {
     storage.clear();
+    final bingoNoti =
+        web.document.querySelector("#bingo-notif") as web.HTMLDivElement;
+    bingoNoti.innerText = "";
   }
 }

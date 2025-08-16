@@ -31,6 +31,7 @@ void main() {
   } else {
     inputPage.style.display = 'none';
     Utils.populateBoard(bingoCard, storage);
+    Utils.bingoNotify(bingoCard);
   }
 
   numTasks.onChange.listen((data) {
