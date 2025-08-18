@@ -4,7 +4,7 @@ import 'package:quickstart/utils/storage.dart';
 import 'package:web/web.dart' as web;
 
 mixin Utils {
-  static int getSize(int numTasks) {
+  static int _getSize(int numTasks) {
     int size;
     switch (numTasks) {
       case 9:
@@ -27,7 +27,7 @@ mixin Utils {
   static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
     bingo.innerHTML = "";
     web.HTMLDivElement curRow;
-    int size = getSize(numTasks);
+    int size = _getSize(numTasks);
     int numButton = 0;
     for (int c = 0; c < size; c++) {
       bingo.insertAdjacentHTML('beforeend', "<div class='col' id='c$c'></div>");
@@ -98,9 +98,9 @@ mixin Utils {
   static void bingoNotify(BingoCard bingo) {
     final bingoNoti =
         web.document.querySelector("#bingo-notif") as web.HTMLDivElement;
-    int bingos = bingoCheck(bingo);
+    int bingos = _bingoCheck(bingo);
     if (bingos > 0) {
-      if (bingos == getSize(bingo.tasksList.length) * 2 + 2) {
+      if (bingos == _getSize(bingo.tasksList.length) * 2 + 2) {
         bingoNoti.innerText = "FULL BINGO!";
       } else {
         bingoNoti.innerText = "$bingos BINGO!";
@@ -110,8 +110,8 @@ mixin Utils {
     }
   }
 
-  static int bingoCheck(BingoCard bingo) {
-    int size = getSize(bingo.tasksList.length);
+  static int _bingoCheck(BingoCard bingo) {
+    int size = _getSize(bingo.tasksList.length);
     int res = 0;
     bool checkDiagLeft = true;
     bool checkDiagRight = true;
@@ -159,7 +159,7 @@ mixin Utils {
   }
 
   // generate bingo board once user presses start
-  static void onStart(int numTasks, String duration, Storage storage) {
+  static BingoCard onStart(int numTasks, String duration, Storage storage) {
     List<Task> tasksList = [];
     int size;
     switch (numTasks) {
@@ -196,8 +196,10 @@ mixin Utils {
       bingo.tasksList[bingo.tasksList.length - 1].markAsDone();
     }
 
+    // save the newly created bingo board and populate the frontend
     storage.save(bingo);
     populateBoard(bingo, storage);
+    return bingo;
   }
 
   static void onClear(Storage storage) {

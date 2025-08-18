@@ -30,6 +30,7 @@ class Storage {
     String? tasksListJson = web.window.localStorage["tasks"];
     String? tasksOrderJson = web.window.localStorage["order"];
 
+    // if anything is somehow not present, acts as if there was no saved data
     if (startTime == null ||
         endTime == null ||
         tasksListJson == null ||

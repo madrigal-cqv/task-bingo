@@ -1,6 +1,29 @@
+import 'package:quickstart/models/bingo_card.dart';
 import 'package:quickstart/utils/utils.dart';
 import "package:quickstart/utils/storage.dart";
 import 'package:web/web.dart' as web;
+
+bool stopTimer = false;
+
+Future<void> updateTimer(BingoCard bingo) async {
+  Duration timeLeft = bingo.endTime.difference(DateTime.now());
+  final timer = web.document.querySelector("#timer") as web.HTMLDivElement;
+  timer.innerText = "";
+
+  // Actual timer part
+  // Could have used Timer class, but this gives me a bit more flexibility
+  while (timeLeft != Duration.zero && !stopTimer) {
+    timer.innerText = timeLeft.toString().split('.').first.padLeft(8, "0");
+    await Future.delayed(const Duration(seconds: 1));
+    timeLeft = DateTime.now().difference(bingo.endTime);
+  }
+
+  // disable buttons when done
+  for (int i = 0; i < bingo.tasksList.length; i++) {
+    final button = web.document.querySelector("#r$i") as web.HTMLButtonElement;
+    button.disabled = true;
+  }
+}
 
 void main() {
   final inputPage =
@@ -32,6 +55,7 @@ void main() {
     inputPage.style.display = 'none';
     Utils.populateBoard(bingoCard, storage);
     Utils.bingoNotify(bingoCard);
+    updateTimer(bingoCard);
   }
 
   numTasks.onChange.listen((data) {
@@ -42,12 +66,19 @@ void main() {
   startButton.onClick.listen((data) {
     bingoPage.removeAttribute("style");
     inputPage.style.display = 'none';
-    Utils.onStart(int.parse(numTasks.value), duration.value, storage);
+    final newBingo = Utils.onStart(
+      int.parse(numTasks.value),
+      duration.value,
+      storage,
+    );
+    stopTimer = false;
+    updateTimer(newBingo);
   });
 
   clearButton.onClick.listen((data) {
     Utils.onClear(storage);
     bingoPage.style.display = 'none';
     inputPage.removeAttribute("style");
+    stopTimer = true;
   });
 }

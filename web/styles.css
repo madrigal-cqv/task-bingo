@@ -59,6 +59,13 @@ html, body {
   color: white;
 }
 
+#timer {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  font-size: 32px;
+}
+
 #input-page {
   width: 100%;
   display: flex;
