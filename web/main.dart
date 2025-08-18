@@ -5,24 +5,35 @@ import 'package:web/web.dart' as web;
 
 bool stopTimer = false;
 
-Future<void> updateTimer(BingoCard bingo) async {
-  Duration timeLeft = bingo.endTime.difference(DateTime.now());
-  final timer = web.document.querySelector("#timer") as web.HTMLDivElement;
-  timer.innerText = "";
-
-  // Actual timer part
-  // Could have used Timer class, but this gives me a bit more flexibility
-  while (timeLeft != Duration.zero && !stopTimer) {
-    timer.innerText = timeLeft.toString().split('.').first.padLeft(8, "0");
-    await Future.delayed(const Duration(seconds: 1));
-    timeLeft = DateTime.now().difference(bingo.endTime);
-  }
-
-  // disable buttons when done
+void disableButtons(BingoCard bingo) {
   for (int i = 0; i < bingo.tasksList.length; i++) {
     final button = web.document.querySelector("#r$i") as web.HTMLButtonElement;
     button.disabled = true;
   }
+}
+
+void enableButtons(BingoCard bingo) {
+  for (int i = 0; i < bingo.tasksList.length; i++) {
+    final button = web.document.querySelector("#r$i") as web.HTMLButtonElement;
+    button.disabled = false;
+  }
+}
+
+Future<void> updateTimer(BingoCard bingo) async {
+  Duration timeLeft = bingo.endTime.difference(DateTime.now());
+  final timer = web.document.querySelector("#timer") as web.HTMLDivElement;
+  timer.innerText = timeLeft.toString().split('.').first.padLeft(8, "0");
+
+  // Actual timer part
+  // Could have used Timer class, but this gives me a bit more flexibility
+  while (timeLeft > Duration.zero && !stopTimer) {
+    timer.innerText = timeLeft.toString().split('.').first.padLeft(8, "0");
+    await Future.delayed(const Duration(seconds: 1));
+    timeLeft = bingo.endTime.difference(DateTime.now());
+  }
+
+  // disable buttons when done
+  disableButtons(bingo);
 }
 
 void main() {
@@ -72,6 +83,7 @@ void main() {
       storage,
     );
     stopTimer = false;
+    enableButtons(newBingo);
     updateTimer(newBingo);
   });
 
