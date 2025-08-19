@@ -1,9 +1,9 @@
 import 'task.dart';
 
-class BingoCard {
+class BingoCard<T extends Task> {
   final DateTime startTime;
   DateTime endTime;
-  final List<Task> tasksList;
+  final List<T> tasksList;
   late final List<int> tasksOrder;
 
   // I tried to look into how to make a more robust constructor,
