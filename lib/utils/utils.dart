@@ -1,4 +1,5 @@
 import 'package:quickstart/models/bingo_card.dart';
+import 'package:quickstart/models/bingo_card_extension.dart';
 import 'package:quickstart/models/task.dart';
 import 'package:quickstart/utils/bingo_monitor.dart';
 import 'package:quickstart/utils/generate.dart';
@@ -76,7 +77,7 @@ class Utils with Generate, BingoMonitor {
 
     final bingo = BingoCard(
       DateTime.now(),
-      BingoCard.calculateEndTime(duration, DateTime.now()),
+      BingoCardExtension.calculateEndTime(duration, DateTime.now()),
       tasksList,
     );
 
