@@ -13,7 +13,7 @@ class BingoCard {
   static DateTime calculateEndTime(String duration, DateTime curr) {
     switch (duration) {
       case "d":
-        return curr.add(const Duration(seconds: 24));
+        return curr.add(const Duration(days: 1));
       case "w":
         return curr.add(const Duration(days: 7));
       case "m":

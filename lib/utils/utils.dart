@@ -1,66 +1,17 @@
 import 'package:quickstart/models/bingo_card.dart';
 import 'package:quickstart/models/task.dart';
+import 'package:quickstart/utils/bingo_monitor.dart';
+import 'package:quickstart/utils/generate.dart';
 import 'package:quickstart/utils/storage.dart';
 import 'package:web/web.dart' as web;
 
-mixin Utils {
-  static int _getSize(int numTasks) {
-    int size;
-    switch (numTasks) {
-      case 9:
-        size = 3;
-        break;
-      case 16:
-        size = 4;
-        break;
-      case 25:
-        size = 5;
-        break;
-      default:
-        size = 0;
-        break;
-    }
-    return size;
-  }
-
-  // Generate the bingo board based on the number of tasks
-  static void generateBoard(int numTasks, web.HTMLDivElement bingo) {
-    bingo.innerHTML = "";
-    web.HTMLDivElement curRow;
-    int size = _getSize(numTasks);
-    int numButton = 0;
-    for (int c = 0; c < size; c++) {
-      bingo.insertAdjacentHTML('beforeend', "<div class='col' id='c$c'></div>");
-      curRow = web.document.querySelector('#c$c') as web.HTMLDivElement;
-      for (int r = 0; r < size; r++) {
-        curRow.insertAdjacentHTML('beforeend', """<div class='row'>
-              <button class='bingo-button' id='r$numButton'></button>
-              </div>""");
-        numButton++;
-      }
-    }
-  }
-
-  static void generateInputs(int numTasks, web.HTMLDivElement tasksInput) {
-    int trueNum = numTasks;
-    tasksInput.innerHTML = "";
-    tasksInput.insertAdjacentHTML(
-      'beforeend',
-      "<p>Input your tasks: </p> <br>",
-    );
-    if (numTasks == 9 || numTasks == 25) {
-      trueNum = numTasks - 1;
-    }
-    for (int i = 0; i < trueNum; i++) {
-      tasksInput.insertAdjacentHTML(
-        'beforeend',
-        "<p>${i + 1} <input class='input' id='input$i' type='text'></input></p>",
-      );
-    }
-  }
-
+class Utils with Generate, BingoMonitor {
   // populate the board based on bingo data
-  static void populateBoard(BingoCard bingo, Storage storage) {
+  void populateBoard(
+    BingoCard bingo,
+    Storage storage,
+    web.HTMLDivElement bingoNoti,
+  ) {
     for (int i = 0; i < bingo.tasksList.length; i++) {
       final button =
           web.document.querySelector("#r$i") as web.HTMLButtonElement;
@@ -75,91 +26,34 @@ mixin Utils {
           ..color = "black";
       }
       button.onClick.listen((data) {
-        markAsDone(button, storage, bingo, bingo.tasksOrder[i]);
+        markAsDone(button, storage, bingo, bingo.tasksOrder[i], bingoNoti);
       });
     }
   }
 
   // mark tile as done. Update bingo board and memory. Check for bingos if any
-  static void markAsDone(
+  void markAsDone(
     web.HTMLButtonElement button,
     Storage storage,
     BingoCard bingo,
     int pos,
+    web.HTMLDivElement bingoNoti,
   ) {
     button.style
       ..backgroundColor = "green"
       ..color = "white";
     bingo.tasksList[pos].markAsDone();
-    bingoNotify(bingo);
+    bingoNotify(bingo, bingoNoti);
     storage.save(bingo);
   }
 
-  static void bingoNotify(BingoCard bingo) {
-    final bingoNoti =
-        web.document.querySelector("#bingo-notif") as web.HTMLDivElement;
-    int bingos = _bingoCheck(bingo);
-    if (bingos > 0) {
-      if (bingos == _getSize(bingo.tasksList.length) * 2 + 2) {
-        bingoNoti.innerText = "FULL BINGO!";
-      } else {
-        bingoNoti.innerText = "$bingos BINGO!";
-      }
-    } else {
-      bingoNoti.innerText = "";
-    }
-  }
-
-  static int _bingoCheck(BingoCard bingo) {
-    int size = _getSize(bingo.tasksList.length);
-    int res = 0;
-    bool checkDiagLeft = true;
-    bool checkDiagRight = true;
-
-    for (int c = 0; c < size; c++) {
-      bool checkCol = true;
-      bool checkRow = true;
-      for (int r = 0; r < size; r++) {
-        // column check
-        checkCol =
-            checkCol &&
-            bingo.tasksList[bingo.tasksOrder[size * c + r]].isDone();
-        // row check
-        checkRow =
-            checkRow &&
-            bingo.tasksList[bingo.tasksOrder[size * r + c]].isDone();
-        // top left to bottom right check
-        if (r == c) {
-          checkDiagLeft =
-              checkDiagLeft &&
-              bingo.tasksList[bingo.tasksOrder[size * c + r]].isDone();
-        }
-        // top right to bottom left check
-        if (r + c == size - 1) {
-          checkDiagRight =
-              checkDiagRight &&
-              bingo.tasksList[bingo.tasksOrder[size * c + r]].isDone();
-        }
-      }
-      if (checkCol) {
-        res++;
-      }
-      if (checkRow) {
-        res++;
-      }
-    }
-    if (checkDiagLeft) {
-      res++;
-    }
-    if (checkDiagRight) {
-      res++;
-    }
-
-    return res;
-  }
-
   // generate bingo board once user presses start
-  static BingoCard onStart(int numTasks, String duration, Storage storage) {
+  BingoCard onStart(
+    int numTasks,
+    String duration,
+    Storage storage,
+    web.HTMLDivElement bingoNoti,
+  ) {
     List<Task> tasksList = [];
     int size;
     switch (numTasks) {
@@ -198,14 +92,12 @@ mixin Utils {
 
     // save the newly created bingo board and populate the frontend
     storage.save(bingo);
-    populateBoard(bingo, storage);
+    populateBoard(bingo, storage, bingoNoti);
     return bingo;
   }
 
-  static void onClear(Storage storage) {
+  void onClear(Storage storage, web.HTMLDivElement bingoNoti) {
     storage.clear();
-    final bingoNoti =
-        web.document.querySelector("#bingo-notif") as web.HTMLDivElement;
     bingoNoti.innerText = "";
   }
 }
