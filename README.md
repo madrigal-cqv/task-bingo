@@ -25,3 +25,14 @@ A simple webapp for making and keeping track of task bingos. Users can choose be
 ## Dependencies
 - `package:web/web.dart`: For web functionalities
 - `dart:convert`: For JSON handling
+
+## Key Dart features demonstrated
+- Stream handling (with listen)
+- Null safety
+- Future and async-await
+- Generics
+- Extension
+- Mixins
+- Late variables
+- List and Map
+- User input handling through web UI
