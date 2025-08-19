@@ -1,6 +1,7 @@
 import 'package:quickstart/models/bingo_card.dart';
 
 extension BingoCardExtension on BingoCard {
+  // helper to calculate the end time of the bingo card
   static calculateEndTime(String duration, DateTime curr) {
     switch (duration) {
       case "d":

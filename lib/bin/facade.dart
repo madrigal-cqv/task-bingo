@@ -26,6 +26,7 @@ class Facade extends Utils {
 
   bool stopTimer = false;
 
+  // disable interactions with the bingo board
   void disableButtons(BingoCard bingo) {
     for (int i = 0; i < bingo.tasksList.length; i++) {
       final button =
@@ -34,6 +35,7 @@ class Facade extends Utils {
     }
   }
 
+  // enable interactions with the bingo board
   void enableButtons(BingoCard bingo) {
     for (int i = 0; i < bingo.tasksList.length; i++) {
       final button =

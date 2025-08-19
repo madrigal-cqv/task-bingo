@@ -7,9 +7,10 @@ class BingoCard<T extends Task> {
   late final List<int> tasksOrder;
 
   // I tried to look into how to make a more robust constructor,
-  // but the language does not really allow for it
+  // but the language does not really allow for it.
   BingoCard(this.startTime, this.endTime, this.tasksList);
 
+  // generate and randomize task order
   void generateTaskOrder() {
     tasksOrder = [];
     for (int i = 0; i < tasksList.length; i++) {

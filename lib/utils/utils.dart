@@ -97,6 +97,7 @@ class Utils with Generate, BingoMonitor {
     return bingo;
   }
 
+  // function to invoke when clear button is clicked
   void onClear(Storage storage, web.HTMLDivElement bingoNoti) {
     storage.clear();
     bingoNoti.innerText = "";
